@@ -1,28 +1,35 @@
+
 <template>
-    <div>
+    <div class="main-container">
         <button @click="goToPreviousWeek">Previous Week</button>
         <button @click="goToNextWeek">Next Week</button>
         <div></div>
         <RentalStationSelector :stations="stations" @station-selected="stationSelected" />
-        <WeekView :startDate="startDate" :selectedStationBookings="selectedStationBookings" />
+        <WeekView :startDate="startDate" :selectedStationBookings="selectedStationBookings" @booking-details="bookingDetails"/>
+        <BookingDetailView :booking="booking" :clicked="clicked" :stationName="stationName"/>
     </div>
   </template>
   
   <script>
   import WeekView from './components/WeekView.vue';
   import RentalStationSelector from './components/RentalStationSelector.vue';
+    import BookingDetailView from './components/BookingDetailView.vue';
   
   export default {
         components: {
             RentalStationSelector,
-            WeekView
+            WeekView,
+            BookingDetailView
 
         },
         data() {
             return {
                 startDate: new Date("2021-03-13T22:04:19.032Z"),
                 stations: [],
-                selectedStationBookings: []
+                selectedStationBookings: [],
+                booking: {},
+                clicked: false,
+                stationName: null
             }
         },
         mounted() {
@@ -64,12 +71,29 @@
             },
 
             stationSelected(stationId) {
-              const station = this.stations.find(s => s.id === stationId);
+              const station = this.stations.find(station => station.id === stationId);
               this.selectedStationBookings = station ? station.bookings : [];
-              console.log(this.selectedStationBookings, "<###")
+              this.stationName = station ? station.name : null;
+              console.log(station.name, "<station")
+            },
+
+            bookingDetails(item) {
+                console.log(item, "<booking")
+                this.booking = item ? item : {};
+                this.clicked = !this.clicked;
+                console.log(this.clicked, "<clicked")
             }
 
         }
   }
   </script>
   
+  <style scoped>
+    .main-container {
+        /* display: flex; */
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+        max-width: 100%;
+    }
+  </style>

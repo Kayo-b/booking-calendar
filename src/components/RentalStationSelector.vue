@@ -13,7 +13,8 @@
     },
     methods: {
       stationChanged(stationId) {
-        this.$emit('station-selected', stationId);
+        const station = this.stations.find(station => station.id === stationId);
+        this.$emit('station-selected', stationId, station ? station.name : null);
       }
     }
   };

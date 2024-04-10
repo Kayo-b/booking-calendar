@@ -25,10 +25,11 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 424px) {
   body {
     display: flex;
-    place-items: center;
+    place-items: start;
+    height: 100%;
   }
 
   #app {
