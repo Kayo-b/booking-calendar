@@ -24,6 +24,10 @@
                     <div class="booking-detail-view__content__booking__value">{{ booking.endDate }}</div>
                 </div>
                 <div class="booking-detail-view__content__booking">
+                    <div class="booking-detail-view__content__booking__label">Duration: </div>
+                    <div class="booking-detail-view__content__booking__value">{{ Math.floor(( new Date(booking.startDate).getTime() - new Date(booking.endDate).getTime()) / (1000 * 3600 * 24) * -1)}} Days</div>
+                </div>
+                <div class="booking-detail-view__content__booking">
                     <div class="booking-detail-view__content__booking__label">Station:</div>
                     <div class="booking-detail-view__content__booking__value">{{ stationName }}</div>
                 </div>
