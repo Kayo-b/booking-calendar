@@ -1,4 +1,5 @@
 <template>
+<div class="test-container">
 <div @click="hide" :class="{ modalBackground: isVisible }"></div>
     <div class="main-container" :style="{ display: isVisible ? 'block' : 'none'}">
         <div class="booking-detail-view">
@@ -6,7 +7,16 @@
             <div class="booking-detail-view__header">
                 <h1>Booking Details</h1>
             </div>
-            <div class="booking-detail-view__content">
+            <div class="booking-grid">
+             <div v-for="(detail, index) in bookingDetails" :key="index">
+                <div class="booking-detail-view__content__booking">
+                    <div class="booking-detail-label">{{ detail.label }}</div>
+                    <div class="booking-detail-value"> &nbsp{{ detail.value }}</div>
+                </div>
+            </div>   
+            </div>
+            
+            <!-- <div class="booking-detail-view__content">
                 <div class="booking-detail-view__content__booking">
                     <div class="booking-detail-view__content__booking__label">Booking ID:</div>
                     <div class="booking-detail-view__content__booking__value">{{ booking.id }}</div>
@@ -31,10 +41,10 @@
                     <div class="booking-detail-view__content__booking__label">Station:</div>
                     <div class="booking-detail-view__content__booking__value">{{ stationName }}</div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
-
+</div>
 </template>
 
   <script>
@@ -54,6 +64,18 @@
                 this.show();
             }
         },
+        computed: {
+            bookingDetails() {
+                return [
+                    {label: 'Booking ID: ', value: this.booking.id},
+                    {label: 'Customer Name: ', value: this.booking.customerName},
+                    {label: 'Start Date: ', value: this.booking.startDate},
+                    {label: 'End Date: ', value: this.booking.endDate},
+                    {label: 'Duration: ', value: Math.floor(( new Date(this.booking.startDate).getTime() - new Date(this.booking.endDate).getTime()) / (1000 * 3600 * 24) * -1) + ' Days'},
+                    {label: 'Station: ', value: this.stationName}
+                ]
+            }
+        },
         methods: {
             show() {
                 // console.log("show")
@@ -70,6 +92,11 @@
     }
     </script>
 <style scoped>
+    .test-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
     .modalBackground {
         position: absolute;
         top: 0;
@@ -78,25 +105,36 @@
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
         visibility: visible;
-        
     }
-    .main-container {
+    /* .main-container-2{
         display: flex;
+        position: relative;
+    } */
+    .main-container {
+        /* display: flex; */
         position: absolute;
         justify-content: center;
         align-items: center;
         top: 10%;
-        right: 35%;
+        /* right: 0;
+        bottom: 0;
+        left: 0; */
         background-color: black; 
         /* visibility: hidden; */
         /* height: 100vh; */
         /* border: 1px solid #ff0000; */
     }
     .booking-detail-view {
-        width: 300px;
+        /* display: grid; */
+        /* grid-template-columns: 1fr; */
+        width: 600px;
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 10px;
+    }
+    .booking-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
     .booking-detail-view__header {
         text-align: center;
@@ -112,6 +150,13 @@
     }
     .booking-detail-view__content__booking__value {
         flex: 1;
+    }
+    @media (max-width: 600px) {
+        .booking-detail-view {
+            width: 100%;
+        }
+        .modalBackground {
+        }
     }
 
 </style>

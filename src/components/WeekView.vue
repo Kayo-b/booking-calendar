@@ -14,11 +14,11 @@
       </div>
        <div class="booking-column" v-for="(item) in weekDays">
            <div class="date" v-for="(item) in item.pickupArray">
-                <div class="booking-pickup" @click="bookingDetails(item)">{{ item?.customerName }}</div>
+                  <div class="booking-pickup" @click="bookingDetails(item)"><ArrowUp class="arrow"/>Pickup</div>
 
            </div> 
            <div v-for="(item) in item.dropoffArray">
-                <div class="booking-dropoff" @click="bookingDetails(item)">{{ item?.customerName }}</div>
+                <div class="booking-dropoff" @click="bookingDetails(item)"><ArrowDown class="arrow"/>Return</div>
 
            </div>
         </div>
@@ -26,12 +26,17 @@
   </template>
   
   <script>
-import { watch } from 'vue';
+    import ArrowUp from './icons/arrow-up-circle.svg';  
+    import ArrowDown from './icons/arrow-down-circle.svg';  
 
 export default {
     props: {
       startDate: Date,
       selectedStationBookings: Array
+    },
+    components: {
+        ArrowUp,
+        ArrowDown
     },
     
     computed: {
@@ -141,16 +146,24 @@ export default {
     min-height: 200px;
   }
   .booking-pickup {
-    color:green;
+    color:#17B700;
     background-color: #383838;
-    border: 1px solid black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     margin: 2px;
+    border: 2px solid transparent
+
   }
   .booking-dropoff {
-    color: red;
+    color: #E50A0A;
     background-color: #383838;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 2px;
+    border: 2px solid transparent
   }
   .date-first-row {
     display: flex;
@@ -158,5 +171,15 @@ export default {
     justify-content: center;
     align-items: center;
   } 
+  .booking-dropoff:hover, .booking-pickup:hover {
+    background-color: #383838;
+    cursor: pointer;
+    border: 2px solid rgb(28, 28, 28);
+  }
+  .arrow {
+    height: 16px;
+    width: 16px;
+    margin-right: 1px;
+  }
   </style>
   

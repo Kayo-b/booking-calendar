@@ -12,7 +12,7 @@
                  
                 <div class="icon-container" @click="goToNextWeek"><ArrowRight class="arrow"/></div>
             </div>
-            <RentalStationSelector :stations="stations" @station-selected="stationSelected" />
+            <RentalStationSelector class="station-selection" :stations="stations" @station-selected="stationSelected" />
         </div>  
         <WeekView :key="renderKey" :startDate="startDate" :selectedStationBookings="selectedStationBookings" @booking-details="bookingDetails" @week-days="updateWeekDays"/>
         <BookingDetailView :booking="booking" :clicked="clicked" :stationName="stationName"/>
@@ -24,7 +24,8 @@
     import BookingDetailView from './components/BookingDetailView.vue';
     import ArrowLeft from './components/icons/arrow-prev-small.svg';
     import ArrowRight from './components/icons/arrow-next-small.svg';
-  
+
+
   export default {
         components: {
             RentalStationSelector,
@@ -134,6 +135,8 @@
         align-items: center;
         width: 100%;
         margin: 5px;
+        /* border: 1px solid red; */
+        padding-left: 170px;
     }
     /* .week-range {
         display: flex;
@@ -151,19 +154,53 @@
   #date-1, #date-2{
     color: white;
     margin: 1px;
+    font-size: large;
+    color: rgba(232, 232, 232, 0.685)
 
   }
   .icon-container {
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
+    margin: 0px 8px 0px 8px;
   }
   .arrow {
     cursor: pointer;
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
     /* widows: ; */
     /* background-color: rgba(3, 81, 81, 0); */
     filter: invert(50%);
     padding: -10px;
+  }
+  .arrow:hover {
+    filter: invert(100%);
+}
+  .station-selection {
+    width: 200px;
+    height: 30px;
+    font-size: large;
+    background-color: #383838;
+    color: rgba(232, 232, 232, 0.685)
+  }
+  .station-selection:hover {
+    cursor: pointer;
+  }
+  @media (max-width: 720px) {
+    .week-nav {
+        padding-left: 0px;
+    }
+    .icon-container {
+        height: 30px;
+        width: 30px;
+    }
+    .arrow {
+        height: 30px;
+        width: 30px;
+    }
+    .station-selection {
+        width: 150px;
+        height: 25px;
+        font-size: medium;
+    }
   }
   </style>
