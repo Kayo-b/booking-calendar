@@ -12,7 +12,7 @@ export default defineConfig({
     vueJsx(),
     svgLoader()
   ],
-  base: '/booking-calendar/',
+  base: '/booking-calendar/booking-calendar/',
    build: {
     outDir: 'dist',
     rollupOptions: {

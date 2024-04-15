@@ -1,0 +1,75 @@
+import { shallowMount } from '@vue/test-utils';
+import WeekView from '@/components/WeekView.vue';
+import { describe, it, expect } from 'vitest'
+
+
+
+describe('WeekView', () => {
+  it('renders a div element', () => {
+    const wrapper = shallowMount(WeekView);
+    expect(wrapper.find('div').exists()).toBe(true);
+  });
+
+  it('displays the correct number of days', () => {
+    const wrapper = shallowMount(WeekView);
+    const days = wrapper.findAll('.day');
+    expect(days.length).toBe(7);
+  });
+
+  it('displays the correct day name and date', () => {
+    const wrapper = shallowMount(WeekView);
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const dates = wrapper.findAll('.day-name');
+    dates.forEach((date, index) => {
+      expect(date.text()).toBe(dayNames[index]);
+      expect(date.find('span').text()).toBe((index + 1).toString());
+    });
+  });
+
+  it('displays the correct number of pickup and dropoff bookings', () => {
+    const selectedStationBookings = [
+      { startDate: '2022-01-01', endDate: '2022-01-03' },
+      { startDate: '2022-01-02', endDate: '2022-01-04' },
+      { startDate: '2022-01-05', endDate: '2022-01-06' },
+    ];
+    const wrapper = shallowMount(WeekView, {
+      propsData: {
+        startDate: new Date('2022-01-01'),
+        selectedStationBookings: selectedStationBookings,
+      },
+    });
+    const pickupBookings = wrapper.findAll('.booking-pickup');
+    const dropoffBookings = wrapper.findAll('.booking-dropoff');
+    expect(pickupBookings.length).toBe(2);
+    expect(dropoffBookings.length).toBe(1);
+  });
+
+  it('emits booking-details event when a booking is clicked', () => {
+    const selectedStationBookings = [
+      { startDate: '2022-01-01', endDate: '2022-01-03' },
+    ];
+    const wrapper = shallowMount(WeekView, {
+      propsData: {
+        startDate: new Date('2022-01-01'),
+        selectedStationBookings: selectedStationBookings,
+      },
+    });
+    const booking = wrapper.find('.booking-pickup');
+    booking.trigger('click');
+    expect(wrapper.emitted('booking-details')).toBeTruthy();
+    expect(wrapper.emitted('booking-details')[0][0]).toBe(selectedStationBookings[0]);
+  });
+
+  it('emits week-days event when startDate changes', async () => {
+    const wrapper = shallowMount(WeekView, {
+      propsData: {
+        startDate: new Date('2022-01-01'),
+        selectedStationBookings: [],
+      },
+    });
+    wrapper.setProps({ startDate: new Date('2022-01-02') });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('week-days')).toBeTruthy();
+    expect(wrapper.emitted('week-days')[0][0]).toEqual(wrapper.vm.weekDays);
+  });
+});
