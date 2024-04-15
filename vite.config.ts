@@ -11,6 +11,7 @@ export default defineConfig({
     vueJsx(),
     svgLoader()
   ],
+  base: '/booking-calendar/booking-calendar/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
