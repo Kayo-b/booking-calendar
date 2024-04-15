@@ -1,185 +1,152 @@
-<template>        
-    <!-- <div class="week-range" v-for="(item, index) in weekDays">
-      <div>{{ index === 0 ? `${item.day.getDate()}.${item.day.getMonth() + 1}.${item.day.getYear()}` : '' }}</div>
-        <div>{{ index === 6 ? `${item.day.getDate()}.${item.day.getMonth() + 1}.${item.day.getYear()}` : '' }}</div>
-    </div>   -->
-    <div class="week">
-     
-        <!-- <div class="day" v-for="day in 7" :key="day">
-        <div class="day-name">{{ getDayName(day) }}</div>
-        </div> -->
-      <div class="day" v-for="(item, index) in weekDays" :key="index">
-        <div class="date-first-row"><span>{{item.day.toLocaleDateString('en-US', {weekday: 'long'})}}</span><span>{{ item.day.getDate() }}</span></div>
-       
+<template>
+  <div class="week">
+    <div class="day" v-for="(item, index) in weekDays" :key="index">
+      <div class="date-first-row">
+        <div class="day-name">{{ item.day.toLocaleDateString('en-US', { weekday: 'long' }) }}</div><span>{{
+          item.day.getDate() }}</span>
       </div>
-       <div class="booking-column" v-for="(item) in weekDays">
-           <div class="date" v-for="(item) in item.pickupArray">
-                  <div class="booking-pickup" @click="bookingDetails(item)"><ArrowUp class="arrow"/>Pickup</div>
 
-           </div> 
-           <div v-for="(item) in item.dropoffArray">
-                <div class="booking-dropoff" @click="bookingDetails(item)"><ArrowDown class="arrow"/>Return</div>
-
-           </div>
-        </div>
     </div>
-  </template>
-  
-  <script>
-    import ArrowUp from './icons/arrow-up-circle.svg';  
-    import ArrowDown from './icons/arrow-down-circle.svg';  
+    <div class="booking-column" v-for="(item) in weekDays">
+      <div class="date" v-for="(item) in item.pickupArray">
+        <div class="booking-pickup" @click="bookingDetails(item)">
+          <ArrowUp class="arrow" />Pickup
+        </div>
+
+      </div>
+      <div v-for="(item) in item.dropoffArray">
+        <div class="booking-dropoff" @click="bookingDetails(item)">
+          <ArrowDown class="arrow" />Return
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import ArrowUp from './icons/arrow-up-circle.svg';
+import ArrowDown from './icons/arrow-down-circle.svg';
 
 export default {
-    props: {
-      startDate: Date,
-      selectedStationBookings: Array
-    },
-    components: {
-        ArrowUp,
-        ArrowDown
-    },
-    
-    computed: {
-      weekDays() {
-        return Array.from({ length: 7 }).map((_, index) => {
-            const day = new Date(this.startDate);
-            day.setDate(day.getDate() + index);
-            let bookedDay;
-            let pickupArray = [];
-            let dropoffArray = [];
-            // day = day.toISOString().slice(0, 10);
-            //   console.log(day, "<")
-            //   console.log(this.startDate.getDay(), "<2")
-            let allBookings = this.selectedStationBookings.length;
-            for(let i = 0; i < allBookings; i++) {
-                // if (this.isDateWithinRange(day, this.selectedStationBookings[i]?.startDate, this.selectedStationBookings[i]?.endDate)) {
-                //     console.log("check")
-                //     // return this.selectedStationBookings[0]?.customerName;
-                //     bookedDay = this.selectedStationBookings[i]?.customerName;
-                //     costumerArray.push(bookedDay);
-                //     console.log(costumerArray, "<Name")
-                // }
-                if(day.toISOString().slice(0,10) === this.selectedStationBookings[i]?.startDate.slice(0,10)) {
-      
-                  bookedDay = this.selectedStationBookings[i];
-                    console.log(this.selectedStationBookings, "<3 selected statin")
-                    pickupArray.push(bookedDay);
-                    // console.log(costumerArray, "<Name")
-                }
-                if(day.toISOString().slice(0,10) === this.selectedStationBookings[i]?.endDate.slice(0,10)) {
-                    bookedDay = this.selectedStationBookings[i];
-                    dropoffArray.push(bookedDay);
-                    // console.log(costumerArray, "<Name")
-                }
-            }
-            let test = day.toISOString().slice(0,10);
-            // console.log(test.slice(0, 10), "<4")
-            // console.log(this.selectedStationBookings[0]?.startDate.slice(0,10), "<3")
-            // console.log(this.selectedStationBookings[0]?.endDate.slice(0,10), "<3")
-            console.log(day.toLocaleDateString('en-US', {weekday: 'long'}), "DAY")
-            return {day, pickupArray, dropoffArray};
-        });
-      }
-    },
-    methods: {
+  props: {
+    startDate: Date,
+    selectedStationBookings: Array,
+  },
+  components: {
+    ArrowUp,
+    ArrowDown
+  },
 
-        getDayName(dayIndex) {
-        const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        return dayNames[dayIndex - 1];
-        },
-        isDateWithinRange(calendarDate, beginDate, endDate) {
-        const formattedCalendarDate = calendarDate.toISOString().slice(0, 10);
-        const formattedBeginDate = beginDate?.slice(0, 10);
-        const formattedEndDate =  endDate?.slice(0, 10);
-        return formattedCalendarDate >= formattedBeginDate && formattedCalendarDate <= formattedEndDate;
-        },
-        bookingDetails(item) {
-            this.$emit('booking-details', item);
-        },
-        emitWeekdays() {
-            // console.log(this.weekDays.day.getYear(), "<Year !@!@!@")
-            this.$emit('week-days', this.weekDays);
-        },
+  computed: {
 
+    /* weekDays is the main property that is used throughout the app to structure the week calendar.
+      It maps an array containing each day of the week and each array index receives an object containing
+      its respective day, and two further arrays containing the booked pickups or returns(dropoffs) **/
+
+    weekDays() {
+      return Array.from({ length: 7 }).map((_, index) => {
+        const day = new Date(this.startDate);
+        day.setDate(day.getDate() + index);
+        let bookedDay;
+        let pickupArray = [];
+        let dropoffArray = [];
+        let allBookings = this.selectedStationBookings.length;
+        for (let i = 0; i < allBookings; i++) {
+          if (day.toISOString().slice(0, 10) === this.selectedStationBookings[i]?.startDate.slice(0, 10)) {
+            bookedDay = this.selectedStationBookings[i];
+            pickupArray.push(bookedDay);
+          }
+          if (day.toISOString().slice(0, 10) === this.selectedStationBookings[i]?.endDate.slice(0, 10)) {
+            bookedDay = this.selectedStationBookings[i];
+            dropoffArray.push(bookedDay);
+          }
+        }
+        return { day, pickupArray, dropoffArray };
+      });
+    }
+  },
+  methods: {
+    bookingDetails(item) {
+      this.$emit('booking-details', item);
     },
+    emitWeekdays() {
+      this.$emit('week-days', this.weekDays);
+    },
+
+  },
     watch: {
-    // Watching startDate because weekDays depends on it
+    // Watching startDate because the parent component must update its weekDays property after each startDate change 
     startDate: {
-      immediate: true, // Ensures the handler runs immediately on component mount
       handler() {
-              console.log('startDate watcher triggered', this.weekDays);
-
-        this.$emit('week-days', this.weekDays); // Emitting weekDays back to App.vue
+        this.$emit('week-days', this.weekDays); 
       },
     },
   },
-    mounted() {
-        this.emitWeekdays();
-        console.log(this.weekDays, "<weekdays MOUNTED!!!!!!!!!!!")
-    }
-    
+  mounted() {
+    this.emitWeekdays();
   }
 
-  </script>
-  
-  <style scoped>
-  .week {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-  }
-  /* .week-range {
-    background-color: #383839;
-    display: inline-block;
-    border: 1px;
-    gap: 10px;
-    width: 20px;
+}
 
-  } */
-  .day {
-    padding: 10px;
-    background-color: #383838;
-  }
-  .booking-column {
-    padding:2px;
-    background-color: #383838;
-    min-height: 200px;
-  }
-  .booking-pickup {
-    color:#17B700;
-    background-color: #383838;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin: 2px;
-    border: 2px solid transparent
+</script>
 
-  }
-  .booking-dropoff {
-    color: #E50A0A;
-    background-color: #383838;
-    border: 1px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2px;
-    border: 2px solid transparent
-  }
-  .date-first-row {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  } 
-  .booking-dropoff:hover, .booking-pickup:hover {
-    background-color: #383838;
-    cursor: pointer;
-    border: 2px solid rgb(28, 28, 28);
-  }
-  .arrow {
-    height: 16px;
-    width: 16px;
-    margin-right: 1px;
-  }
-  </style>
-  
+<style scoped>
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day {
+  padding: 10px;
+  background-color: #383838;
+}
+
+.booking-column {
+  padding: 2px;
+  background-color: #383838;
+  min-height: 200px;
+}
+
+.booking-pickup {
+  color: #17B700;
+  background-color: #383838;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 2px;
+  border: 2px solid transparent
+}
+
+.booking-dropoff {
+  color: #E50A0A;
+  background-color: #383838;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px;
+  border: 2px solid transparent
+}
+
+.date-first-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.booking-dropoff:hover,
+.booking-pickup:hover {
+  background-color: #383838;
+  cursor: pointer;
+  border: 2px solid rgb(28, 28, 28);
+}
+
+.arrow {
+  height: 16px;
+  width: 16px;
+  margin-right: 1px;
+}
+</style>
